@@ -1,0 +1,244 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "Button": {
+            "properties": {
+                "color": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "paletteColor": {
+                                    "type": "number"
+                                },
+                                "type": {
+                                    "enum": [
+                                        "solid"
+                                    ],
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "paletteColor": {
+                                    "type": "number"
+                                },
+                                "type": {
+                                    "enum": [
+                                        "flash"
+                                    ],
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "paletteColor": {
+                                    "type": "number"
+                                },
+                                "type": {
+                                    "enum": [
+                                        "pulse"
+                                    ],
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "b": {
+                                    "type": "number"
+                                },
+                                "g": {
+                                    "type": "number"
+                                },
+                                "r": {
+                                    "type": "number"
+                                },
+                                "type": {
+                                    "enum": [
+                                        "rgb"
+                                    ],
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ]
+                },
+                "link": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "tabs": {
+            "items": {
+                "allOf": [
+                    {
+                        "properties": {
+                            "color": {
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "paletteColor": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "solid"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "paletteColor": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "flash"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "paletteColor": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "pulse"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "b": {
+                                                "type": "number"
+                                            },
+                                            "g": {
+                                                "type": "number"
+                                            },
+                                            "r": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "rgb"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            },
+                            "selectedColor": {
+                                "anyOf": [
+                                    {
+                                        "properties": {
+                                            "paletteColor": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "solid"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "paletteColor": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "flash"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "paletteColor": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "pulse"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    {
+                                        "properties": {
+                                            "b": {
+                                                "type": "number"
+                                            },
+                                            "g": {
+                                                "type": "number"
+                                            },
+                                            "r": {
+                                                "type": "number"
+                                            },
+                                            "type": {
+                                                "enum": [
+                                                    "rgb"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ]
+                            }
+                        },
+                        "type": "object"
+                    },
+                    {
+                        "properties": {
+                            "buttons": {
+                                "items": {
+                                    "$ref": "#/definitions/Button"
+                                },
+                                "type": "array"
+                            },
+                            "tabType": {
+                                "enum": [
+                                    "list"
+                                ],
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "type": "array"
+        }
+    },
+    "type": "object"
+}
+

@@ -2,10 +2,18 @@ const { typescript } = require('projen');
 const project = new typescript.TypeScriptAppProject({
   defaultReleaseBranch: 'main',
   name: 'dashpad',
+  description: 'Use the Novation Launchpad as a dashboard',
 
-  // deps: [],                /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-  // devDeps: [],             /* Build dependencies for this module. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  deps: ['launchpad.js@^3', 'yargs', 'open', 'jsonschema'],
+  devDeps: ['typescript-json-schema'],
 });
+
+const genSchema = project.addTask('gen:schema', {
+  description: 'Generate JSON schema',
+  steps: [
+    { exec: 'typescript-json-schema src/protocol.ts DashboardState --refs -o src/schema.json' },
+  ],
+});
+project.compileTask.prependSpawn(genSchema);
+
 project.synth();

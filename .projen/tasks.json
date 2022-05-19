@@ -61,6 +61,9 @@
       "description": "Only compile",
       "steps": [
         {
+          "spawn": "gen:schema"
+        },
+        {
           "exec": "tsc --build"
         }
       ]
@@ -92,6 +95,15 @@
       "steps": [
         {
           "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern src test build-tools .projenrc.js"
+        }
+      ]
+    },
+    "gen:schema": {
+      "name": "gen:schema",
+      "description": "Generate JSON schema",
+      "steps": [
+        {
+          "exec": "typescript-json-schema src/protocol.ts DashboardState --refs -o src/schema.json"
         }
       ]
     },
