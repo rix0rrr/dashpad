@@ -42,7 +42,7 @@ export async function dashPad(options: DashPadOptions) {
 class Dashboard {
   private state?: DashboardState;
   private selectedTab: number = 0;
-  private readonly actions = new Map<string, string>();
+  private readonly actions = new Map<string, Action>();
 
   constructor(lp: ILaunchpad, private readonly surface: Surface) {
     lp.on('buttonDown', button => {
@@ -57,17 +57,7 @@ class Dashboard {
       this.surface.layer(1).set(button.xy, OFF);
       this.surface.update();
 
-      if (button.xy[1] === 0) {
-        // Top row == tab switching
-        this.selectTab(button.xy[0]);
-      } else {
-        const action = this.actions.get(xyKey(button.xy));
-        if (action) {
-          open(action).catch(e => {
-            console.error(e);
-          });
-        }
-      }
+      this.performAction(this.actions.get(xyKey(button.xy)));
     });
   }
 
@@ -107,6 +97,7 @@ class Dashboard {
         : tab.color;
 
       this.surface.layer(0).set(i, 0, buttonStyle(color));
+      this.recordAction([i, 0], { action: 'select', tab: i });
     }
 
     // Render current tab
@@ -120,6 +111,22 @@ class Dashboard {
     }
   }
 
+  private performAction(action: Action | undefined) {
+    if (action?.action === 'select') {
+      // Top row == tab switching
+      this.selectTab(action.tab);
+    }
+    if (action?.action === 'open') {
+      open(action.link).catch(e => {
+        console.error(e);
+      });
+    }
+  }
+
+  private recordAction(xy: [number, number], action: Action) {
+    this.actions.set(xyKey(xy), action);
+  }
+
   private renderList(tab: Extract<TabType, { tabType: 'list' }>) {
     let x = 0;
     let y = 1;
@@ -127,7 +134,7 @@ class Dashboard {
     for (const button of tab.buttons) {
       this.surface.layer(0).set(x, y, buttonStyle(button.color));
       if (button.link) {
-        this.actions.set(xyKey([x, y]), button.link);
+        this.recordAction([x, y], { action: 'open', link: button.link });
       }
 
       x += 1;
@@ -138,6 +145,18 @@ class Dashboard {
       if (y > 8) { break; }
     }
   }
+}
+
+type Action = SelectTab | OpenLink;
+
+interface SelectTab {
+  readonly action: 'select';
+  readonly tab: number;
+}
+
+interface OpenLink {
+  readonly action: 'open';
+  readonly link: string;
 }
 
 function buttonStyle(c: Color): Style {
