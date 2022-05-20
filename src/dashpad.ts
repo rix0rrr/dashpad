@@ -50,10 +50,12 @@ class Dashboard {
       const action = this.actions.get(xyKey(button.xy));
       if (action) {
         this.surface.layer(1).set(button.xy, PRESSED_COLOR);
+        this.surface.update();
       }
     });
     lp.on('buttonUp', async (button) => {
       this.surface.layer(1).set(button.xy, OFF);
+      this.surface.update();
 
       if (button.xy[1] === 0) {
         // Top row == tab switching
@@ -75,7 +77,7 @@ class Dashboard {
     if (tabCount > 0 && this.selectedTab === -1) {
       this.selectedTab = 0;
     }
-    this.render();
+    this.update();
   }
 
   public updateTo(state: DashboardState) {
@@ -86,8 +88,13 @@ class Dashboard {
     this.selectTab(this.selectedTab);
   }
 
-  private render() {
+  private update() {
     this.surface.layer(0).allOff();
+    this.renderToSurface();
+    this.surface.update();
+  }
+
+  private renderToSurface() {
     if (!this.state?.tabs) { return; }
 
     // TABS
