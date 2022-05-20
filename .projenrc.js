@@ -12,7 +12,7 @@ const project = new typescript.TypeScriptAppProject({
 
   release: true,
   releaseToNpm: true,
-  autoDetectBin: true,
+  package: true, // Not actually enabled by default
 
   // Necessary to install libalsa2 on GHA
   workflowBootstrapSteps: [
