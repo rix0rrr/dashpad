@@ -23,7 +23,9 @@ export class ShellSource implements ISource {
 export async function shell(command: string): Promise<string> {
   return new Promise((ok, ko) => {
     child_process.exec(command, {}, (error, stdout, stderr) => {
-      console.error(stderr);
+      if (stderr) {
+        console.error(stderr);
+      }
 
       if (error) {
         ko(error);
