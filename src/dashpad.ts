@@ -54,20 +54,35 @@ class Dashboard {
     lp.on('buttonUp', async (button) => {
       this.surface.layer(1).set(button.xy, OFF);
 
-      const action = this.actions.get(xyKey(button.xy));
-      if (action) {
-        open(action).catch(e => {
-          console.error(e);
-        });
+      if (button.xy[1] === 0) {
+        // Top row == tab switching
+        this.selectTab(button.xy[0]);
+      } else {
+        const action = this.actions.get(xyKey(button.xy));
+        if (action) {
+          open(action).catch(e => {
+            console.error(e);
+          });
+        }
       }
     });
   }
 
+  public selectTab(n: number) {
+    const tabCount = (this.state?.tabs ?? []).length;
+    this.selectedTab = Math.min(n, tabCount - 1);
+    if (tabCount > 0 && this.selectedTab === -1) {
+      this.selectedTab = 0;
+    }
+    this.render();
+  }
+
   public updateTo(state: DashboardState) {
-    this.selectedTab = Math.min(this.selectedTab, state.tabs.length - 1);
     this.state = state;
     this.actions.clear();
-    this.render();
+
+    // This re-renders
+    this.selectTab(this.selectedTab);
   }
 
   private render() {
