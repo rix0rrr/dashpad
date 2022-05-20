@@ -6,6 +6,12 @@ const project = new typescript.TypeScriptAppProject({
 
   deps: ['launchpad.js@^3', 'yargs', 'open', 'jsonschema'],
   devDeps: ['typescript-json-schema'],
+
+  authorName: 'Rico Huijbers',
+  authorEmail: 'rix0rrr@gmail.com',
+
+  release: true,
+  releaseToNpm: true,
 });
 
 const genSchema = project.addTask('gen:schema', {
