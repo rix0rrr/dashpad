@@ -14,7 +14,7 @@ const project = new typescript.TypeScriptAppProject({
   releaseToNpm: true,
 
   // Necessary to install libalsa2 on GHA
-  releaseWorkflowSetupSteps: [
+  workflowBootstrapSteps: [
     {
       name: 'Install libalsa',
       run: 'sudo apt-get install -y libasound2-dev',
