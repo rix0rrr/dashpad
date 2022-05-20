@@ -1,7 +1,7 @@
-import open from 'open';
-import { ISource } from './source/isource';
 import type { ILaunchpad, Surface, Style } from 'launchpad.js';
+import open from 'open';
 import { Color, DashboardState, TabType } from './protocol';
+import { ISource } from './source/isource';
 
 const PRESSED_COLOR = { style: 'palette', color: 53 } as const;
 const OFF = { style: 'off' } as const;
