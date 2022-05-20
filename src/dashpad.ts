@@ -14,7 +14,8 @@ export interface DashPadOptions {
 export async function dashPad(options: DashPadOptions) {
   // Unfortunately, 'launchpad.js' is ESM-only and I prefer
   // CommonJS. This is the only way to import ESM from CJS.
-  const { autoDetect, Surface, waitForReady } = await import('launchpad.js');
+  // (The crazy eval trick is necessary otherwise TS will compile the dynamic import away)
+  const { autoDetect, Surface, waitForReady } = await (eval('import("launchpad.js")') as Promise<typeof import('launchpad.js')>);
 
   const lp = autoDetect();
   await waitForReady(lp);
