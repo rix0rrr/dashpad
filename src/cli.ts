@@ -1,5 +1,5 @@
 import * as yargs from 'yargs';
-import { main } from '../src/main';
+import { main } from './main';
 
 async function cli() {
   yargs

@@ -1,6 +1,9 @@
 {
   "name": "dashpad",
   "description": "Use the Novation Launchpad as a dashboard",
+  "bin": {
+    "dashpad": "bin/dashpad"
+  },
   "scripts": {
     "build": "npx projen build",
     "bump": "npx projen bump",
