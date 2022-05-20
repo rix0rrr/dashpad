@@ -12,6 +12,14 @@ const project = new typescript.TypeScriptAppProject({
 
   release: true,
   releaseToNpm: true,
+
+  // Necessary to install libalsa2 on GHA
+  releaseWorkflowSetupSteps: [
+    {
+      name: 'Install libalsa',
+      run: 'sudo apt-get install -y libasound2-dev',
+    },
+  ],
 });
 
 const genSchema = project.addTask('gen:schema', {
@@ -21,5 +29,7 @@ const genSchema = project.addTask('gen:schema', {
   ],
 });
 project.compileTask.prependSpawn(genSchema);
+
+project.release
 
 project.synth();
