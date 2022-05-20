@@ -22,20 +22,30 @@ export async function dashPad(options: DashPadOptions) {
   const dashboard = new Dashboard(lp, new Surface(lp));
 
   return new Promise(() => {
-    async function doPoll() {
-      try {
-        const newState = await options.source.poll();
-        dashboard.setState(newState);
-      } catch (e: any) {
-        console.error(e.message);
-      }
+    let timer: NodeJS.Timeout | undefined;
 
-      setTimeout(doPoll, options.intervalSeconds * 1000);
+    function doPoll() {
+      clearTimeout(timer);
+
+      (async () => {
+        dashboard.setPolling(true);
+        try {
+          const newState = await options.source.poll();
+          dashboard.setState(newState);
+        } catch (e: any) {
+          console.error(e.message);
+        } finally {
+          dashboard.setPolling(false);
+        }
+      })().catch(e => {
+        console.error(e);
+      });
+
+      timer = setTimeout(doPoll, options.intervalSeconds * 1000);
     }
 
-    doPoll().catch(e => {
-      console.error(e);
-    });
+    dashboard.setRefreshHandler(doPoll);
+    doPoll();
   });
 }
 
@@ -43,6 +53,8 @@ class Dashboard {
   private state?: DashboardState;
   private selectedTab: number = 0;
   private readonly actions = new Map<string, Action>();
+  private refreshHandler?: Thunk;
+  private polling = false;
 
   constructor(lp: ILaunchpad, private readonly surface: Surface) {
     lp.on('buttonDown', button => {
@@ -59,6 +71,15 @@ class Dashboard {
 
       this.performAction(this.actions.get(xyKey(button.xy)));
     });
+  }
+
+  public setRefreshHandler(cb: Thunk | undefined) {
+    this.refreshHandler = cb;
+  }
+
+  public setPolling(polling: boolean) {
+    this.polling = polling;
+    this.update();
   }
 
   public selectTab(n: number) {
@@ -102,24 +123,40 @@ class Dashboard {
 
     // Render current tab
     const tab = this.state.tabs[this.selectedTab];
-    if (!tab) { return; }
+    if (tab) {
+      switch (tab.tabType) {
+        case 'list':
+          this.renderList(tab);
+          break;
+      }
+    }
 
-    switch (tab.tabType) {
-      case 'list':
-        this.renderList(tab);
-        break;
+    // Refresh handler
+    if (this.refreshHandler) {
+      const refreshLocation = [8, 8] as [number, number];
+      this.surface.layer(0).set(refreshLocation, { style: this.polling ? 'flash' : 'palette', color: 43 });
+      this.recordAction(refreshLocation, {
+        action: 'fn',
+        callback: this.refreshHandler,
+      });
     }
   }
 
   private performAction(action: Action | undefined) {
-    if (action?.action === 'select') {
-      // Top row == tab switching
-      this.selectTab(action.tab);
-    }
-    if (action?.action === 'open') {
-      open(action.link).catch(e => {
-        console.error(e);
-      });
+    if (!action) { return; }
+
+    switch (action.action) {
+      case 'select':
+        this.selectTab(action.tab);
+        break;
+      case 'open':
+        open(action.link).catch(e => {
+          console.error(e);
+        });
+        break;
+      case 'fn':
+        setImmediate(() => action.callback());
+        break;
     }
   }
 
@@ -147,7 +184,7 @@ class Dashboard {
   }
 }
 
-type Action = SelectTab | OpenLink;
+type Action = SelectTab | OpenLink | CallFunction;
 
 interface SelectTab {
   readonly action: 'select';
@@ -158,6 +195,13 @@ interface OpenLink {
   readonly action: 'open';
   readonly link: string;
 }
+
+interface CallFunction {
+  readonly action: 'fn';
+  readonly callback: Thunk;
+}
+
+type Thunk = () => void;
 
 function buttonStyle(c: Color): Style {
   switch (c.type) {
