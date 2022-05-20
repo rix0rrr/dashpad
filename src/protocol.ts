@@ -19,7 +19,7 @@ export interface Button {
 }
 
 export type Color =
-  | { type: 'solid', paletteColor: number }
-  | { type: 'flash', paletteColor: number }
-  | { type: 'pulse', paletteColor: number }
-  | { type: 'rgb', r: number, g: number, b: number };
+  | { type: 'solid'; paletteColor: number }
+  | { type: 'flash'; paletteColor: number }
+  | { type: 'pulse'; paletteColor: number }
+  | { type: 'rgb'; r: number; g: number; b: number };

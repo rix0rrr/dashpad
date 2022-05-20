@@ -31,6 +31,6 @@ const genSchema = project.addTask('gen:schema', {
 });
 project.compileTask.prependSpawn(genSchema);
 
-project.release
+project.release;
 
 project.synth();

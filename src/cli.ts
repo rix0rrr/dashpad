@@ -20,12 +20,12 @@ async function cli() {
           description: 'Dashboard source (file, URL or !command)',
         })
         .demandOption('SOURCE'),
-        async (argv) => {
-          await main({
-            intervalSeconds: argv.interval,
-            source: argv.SOURCE,
-          });
-        }
+      async (argv) => {
+        await main({
+          intervalSeconds: argv.interval,
+          source: argv.SOURCE,
+        });
+      },
     )
     .strict()
     .argv;

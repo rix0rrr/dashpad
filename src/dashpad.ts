@@ -32,7 +32,9 @@ export async function dashPad(options: DashPadOptions) {
       setTimeout(doPoll, options.intervalSeconds * 1000);
     }
 
-    doPoll();
+    doPoll().catch(e => {
+      console.error(e);
+    });
   });
 }
 
@@ -49,12 +51,14 @@ class Dashboard {
         this.surface.layer(1).set(button.xy, PRESSED_COLOR);
       }
     });
-    lp.on('buttonUp', button => {
+    lp.on('buttonUp', async (button) => {
       this.surface.layer(1).set(button.xy, OFF);
 
       const action = this.actions.get(xyKey(button.xy));
       if (action) {
-        open(action);
+        open(action).catch(e => {
+          console.error(e);
+        });
       }
     });
   }
