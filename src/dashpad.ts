@@ -25,7 +25,7 @@ export async function dashPad(options: DashPadOptions) {
     async function doPoll() {
       try {
         const newState = await options.source.poll();
-        dashboard.updateTo(newState);
+        dashboard.setState(newState);
       } catch (e: any) {
         console.error(e.message);
       }
@@ -70,15 +70,15 @@ class Dashboard {
     this.update();
   }
 
-  public updateTo(state: DashboardState) {
+  public setState(state: DashboardState) {
     this.state = state;
-    this.actions.clear();
 
     // This re-renders
     this.selectTab(this.selectedTab);
   }
 
   private update() {
+    this.actions.clear();
     this.surface.layer(0).allOff();
     this.renderToSurface();
     this.surface.update();
